@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  ssh-client:
+    image: ubuntu:22.04
+    container_name: ssh-client
+    command: sleep infinity
+    stdin_open: true
+    tty: true
+    volumes:
+      - ~/.ssh:/root/.ssh:ro
+    network_mode: host        # 🔥 Aquí es la clave
+    cap_add:
+      - NET_ADMIN
+    restart: unless-stopped

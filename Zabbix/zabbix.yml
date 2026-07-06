@@ -1,0 +1,24 @@
+version: "3.8"
+
+services:
+  zabbix-server-pgsql:
+    image: zabbix/zabbix-server-pgsql:latest
+    expose:
+      - 8080:8080
+    environment:
+      DB_SERVER_HOST: postgresql
+      POSTGRES_USER: ${POSTGRES_USER:?Falta POSTGRES_USER en .env}
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?Falta POSTGRES_PASSWORD en .env}"
+    tty: true
+    stdin_open: true
+    restart: unless-stopped
+    volumes:
+      - /externalHD/postgresql:/var 
+    networks:
+      - victoriametrics_vm_net2
+
+volumes:
+  data:
+networks:
+  victoriametrics_vm_net2:
+     external: true

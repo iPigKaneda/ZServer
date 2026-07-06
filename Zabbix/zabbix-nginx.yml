@@ -1,0 +1,23 @@
+version: "3.8"
+
+services:
+  web-nginx-pgsql:
+    image: zabbix/zabbix-web-nginx-pgsql:latest
+    environment:
+      DB_SERVER_HOST: postgresql
+      POSTGRES_USER: ${POSTGRES_USER:?Falta POSTGRES_USER en .env}
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD:?Falta POSTGRES_PASSWORD en .env}"
+      PHP_TZ: "America/Mexico_City"
+      ZBX_SERVER_HOST: zabbix-zabbix-server-pgsql-1
+    tty: true
+    stdin_open: true
+    restart: unless-stopped
+
+    networks:
+      - victoriametrics_vm_net2
+
+volumes:
+  data:
+networks:
+  victoriametrics_vm_net2:
+     external: true

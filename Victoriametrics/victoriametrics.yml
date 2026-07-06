@@ -1,0 +1,74 @@
+version: "3.5"
+services:
+  victoriametrics:
+    container_name: victoriametrics
+    hostname: victoriametrics
+    image: victoriametrics/victoria-metrics:latest
+    ports:
+      - 127.0.0.1:8428:8428
+      - 127.0.0.1:8089:8089
+      - 127.0.0.1:8089:8089/udp
+      - 127.0.0.1:2003:2003
+      - 127.0.0.1:2003:2003/udp
+      - 127.0.0.1:4242:4242
+    volumes:
+      - vmdata:/storage
+    command:
+      - "--storageDataPath=/storage"
+      - "--graphiteListenAddr=:2003"
+      - "--opentsdbListenAddr=:4242"
+      - "--httpListenAddr=:8428"
+      - "--influxListenAddr=:8089"
+      - "--vmalert.proxyURL=http://192.168.3.34:8880"
+    networks:
+      - vm_net2
+    restart: always
+  vmagent:
+    image: victoriametrics/vmagent:v1.146.0
+    depends_on:
+      - "victoriametrics"
+    ports:
+      - 8429:8429
+    volumes:
+      - vmagentdata:/vmagentdata
+      - /compartido/vmetrics/prometheus-vm-single.yml:/etc/prometheus/prometheus.yml
+    command:
+      - "--promscrape.config=/etc/prometheus/prometheus.yml"
+      - "--remoteWrite.url=http://victoriametrics:8428/api/v1/write"
+    restart: always
+  grafana:
+    container_name: grafana
+    hostname: grafana
+    environment:
+      - VIRTUAL_HOST=grafana.zuard.net
+      - VIRTUAL_PROTO=http
+      - VIRTUAL_PORT=3000
+      - LETSENCRYPT_HOST=grafana.zuard.net
+      - GF_SERVER_CERT_FILE=/etc/ssl/certs/site.crt
+      - GF_SERVER_CERT_KEY=/etc/ssl/private/site.dec.key
+      - GF_SERVER_PROTOCOL=http
+      - GF_SERVER_DOMAIN=grafana.zuard.net
+      - GF_SECURITY_ADMIN_USER=${GF_SECURITY_ADMIN_USER:?Falta GF_SECURITY_ADMIN_USER en .env}
+      - GF_SECURITY_ADMIN_PASSWORD=${GF_SECURITY_ADMIN_PASSWORD:?Falta GF_SECURITY_ADMIN_PASSWORD en .env}
+    image: grafana/grafana:latest
+    depends_on:
+      - "victoriametrics"
+    expose:
+      - 3000
+    volumes:
+      - /certificados/grafana_private.key:/etc/ssl/private/site.dec.key
+      - /certificados/grafana_certificate.crt:/etc/ssl/certs/site.crt
+      - grafanadata:/var/lib/grafana
+      - ./provisioning/:/etc/grafana/provisioning/
+      - ./../../dashboards/victoriametrics.json:/var/lib/grafana/dashboards/vm.json
+      - ./../../dashboards/vmagent.json:/var/lib/grafana/dashboards/vmagent.json
+      - ./../../dashboards/vmalert.json:/var/lib/grafana/dashboards/vmalert.json
+    networks:
+      - vm_net2
+    restart: always
+volumes:
+  vmagentdata: {}
+  vmdata: {}
+  grafanadata: {}
+networks:
+  vm_net2:

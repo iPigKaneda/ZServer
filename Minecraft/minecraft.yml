@@ -1,0 +1,20 @@
+services:
+  bds:
+    image: itzg/minecraft-bedrock-server
+    environment:
+      EULA: "TRUE"
+      OPS: "2535411192752363,2535459744505515"
+      GAMEMODE : survival
+      DIFFICULTY : hard
+      LEVEL_NAME : viveros
+      MAX_PLAYERS : 100
+
+    ports:
+      - "19132:19132/udp"
+    volumes:
+      - /minecraft/bedrock/sanpedro:/data
+    stdin_open: true
+    tty: true
+
+volumes:
+  data:

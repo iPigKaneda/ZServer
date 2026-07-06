@@ -1,0 +1,17 @@
+version: "3.8"
+services:
+  otel-col:
+    image: otel/opentelemetry-collector-contrib:latest
+    container_name: otel-col
+    volumes:
+      - /compartido/otel-col/config-nginx.yaml:/etc/otelcol-contrib/config.yaml
+    networks:
+      - victoriametrics_vm_net2
+      - wordpress_rossy_default
+    restart: always
+
+networks:
+  victoriametrics_vm_net2:
+    external: true
+  wordpress_rossy_default:
+    external: true

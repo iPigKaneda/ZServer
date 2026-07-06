@@ -1,0 +1,23 @@
+version: "3.8"
+services:
+  openobserve:
+    image: ca02e4f7ba76
+    container_name: openobserve
+    ports:
+      - "5080:5080"
+    environment:
+      ZO_DATA_DIR: "/data"
+      ZO_ROOT_USER_EMAIL: "${ZO_ROOT_USER_EMAIL:?Falta ZO_ROOT_USER_EMAIL en .env}"
+      ZO_ROOT_USER_PASSWORD: "${ZO_ROOT_USER_PASSWORD:?Falta ZO_ROOT_USER_PASSWORD en .env}"
+    volumes:
+      - /compartido/openobserve/data:/data
+    networks:
+      - victoriametrics_vm_net2
+      - wordpress_rossy_default
+    restart: always
+
+networks:
+  victoriametrics_vm_net2:
+    external: true
+  wordpress_rossy_default:
+    external: true

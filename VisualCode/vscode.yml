@@ -1,0 +1,31 @@
+version: "3.8"
+
+services:
+  code-server:
+    image: lscr.io/linuxserver/code-server:latest
+    container_name: vscode
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=Etc/UTC
+      - PASSWORD=${CODE_SERVER_PASSWORD:?Falta CODE_SERVER_PASSWORD en .env}
+      - SUDO_PASSWORD=${CODE_SERVER_SUDO_PASSWORD:?Falta CODE_SERVER_SUDO_PASSWORD en .env}
+      #PROXY_DOMAIN=vscode.zuard.net #optional
+      - DEFAULT_WORKSPACE=/config/workspace #optional
+      - PWA_APPNAME=code-server #optiona
+      #- HASHED_PASSWORD="${CODE_SERVER_HASHED_PASSWORD}" #optional, alternativa a PASSWORD
+      #- SUDO_PASSWORD_HASH="${CODE_SERVER_SUDO_PASSWORD_HASH}" #optional, alternativa a SUDO_PASSWORD
+    volumes:
+      - /compartido/vscode/config_v308:/config
+    networks:
+      - victoriametrics_vm_net2
+      - wordpress_rossy_default
+    ports:
+      - "8443:8443"
+    restart: unless-stopped
+    
+networks:
+  victoriametrics_vm_net2:
+    external: true
+  wordpress_rossy_default:
+    external: true

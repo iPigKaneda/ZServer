@@ -1,0 +1,3 @@
+# Archivos de variables de entorno con secretos reales (no versionar)
+.env
+**/.env
