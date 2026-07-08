@@ -25,6 +25,8 @@ services:
     environment:
       MYSQL_HOST: mysql
       MYSQL_ROOT_PASS: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_USER: openemr
+      MYSQL_PASS: "${MYSQL_PASS}"
       OE_USER: "${OE_USER}"
       OE_PASS: "${OE_PASS}"
     volumes:
