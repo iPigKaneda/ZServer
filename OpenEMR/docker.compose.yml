@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   mysql:
     image: mariadb:11.4
@@ -30,6 +28,7 @@ services:
       OE_USER: "${OE_USER}"
       OE_PASS: "${OE_PASS}"
     volumes:
+      - openemr_logs:/var/log
       - openemr_sites:/var/www/localhost/htdocs/openemr/sites
       - openemr_ssl:/etc/ssl
     networks:
@@ -41,5 +40,6 @@ networks:
 
 volumes:
   openemr_mysql_data:
+  openemr_logs:
   openemr_sites:
   openemr_ssl:
