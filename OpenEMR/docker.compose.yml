@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+  mysql:
+    image: mariadb:11.4
+    container_name: openemr_mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_DATABASE: openemr
+    volumes:
+      - openemr_mysql_data:/var/lib/mysql
+    command: ['mariadbd', '--character-set-server=utf8mb4']
+
+  openemr:
+    image: openemr/openemr:8.0.0
+    container_name: openemr_app
+    restart: unless-stopped
+    depends_on:
+      - mysql
+    ports:
+      - "${OPENEMR_HOST_PORT:-8443}:443"
+    environment:
+      MYSQL_HOST: mysql
+      MYSQL_ROOT_PASS: "${MYSQL_ROOT_PASSWORD}"
+      OE_USER: "${OE_USER}"
+      OE_PASS: "${OE_PASS}"
+    volumes:
+      - openemr_sites:/var/www/localhost/htdocs/openemr/sites
+      - openemr_ssl:/etc/ssl
+
+volumes:
+  openemr_mysql_data:
+  openemr_sites:
+  openemr_ssl:
