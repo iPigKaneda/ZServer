@@ -11,6 +11,8 @@ services:
     volumes:
       - openemr_mysql_data:/var/lib/mysql
     command: ['mariadbd', '--character-set-server=utf8mb4']
+    networks:
+      - victoriametrics_vm_net2
 
   openemr:
     image: openemr/openemr:8.0.0
