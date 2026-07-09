@@ -4,7 +4,7 @@ services:
     container_name: openemr_mysql
     restart: unless-stopped
     environment:
-      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_ROOT_PASSWORD: "${MARIADB_ROOT_PASSWORD}"
       MYSQL_DATABASE: openemr
     volumes:
       - openemr_mysql_data:/var/lib/mysql
@@ -22,7 +22,7 @@ services:
       - "${OPENEMR_HOST_PORT:-8443}:443"
     environment:
       MYSQL_HOST: mysql
-      MYSQL_ROOT_PASS: "${MYSQL_ROOT_PASSWORD}"
+      MYSQL_ROOT_PASS: "${MARIADB_ROOT_PASSWORD}"
       MYSQL_USER: openemr
       MYSQL_PASS: "${MYSQL_PASS}"
       OE_USER: "${OE_USER}"
